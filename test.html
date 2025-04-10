@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <div id="fingerCountDisplay"></div>
+    <script>
+        const socket = new WebSocket("ws://localhost:8765");
+        socket.onmessage = function(event) {
+            const fingerCount = event.data;
+            document.getElementById("fingerCountDisplay").innerText = "Finger Count: " + fingerCount;
+        };
+    </script>
+</body>
+</html>
