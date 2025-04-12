@@ -564,7 +564,7 @@ let allPeers = {}; // keep track of all peers in the room, indexed by peer_id ==
 
 // stream
 let initStream; // initial webcam stream
-let localVideoMediaStream; // my webcam
+var localVideoMediaStream; // my webcam
 let localAudioMediaStream; // my microphone
 let peerVideoMediaElements = {}; // keep track of our peer <video> tags, indexed by peer_id_video
 let peerAudioMediaElements = {}; // keep track of our peer <audio> tags, indexed by peer_id_audio
@@ -1158,8 +1158,18 @@ function initClientPeer() {
     signalingSocket.on('videoPlayer', handleVideoPlayer);
     signalingSocket.on('disconnect', handleDisconnect);
     signalingSocket.on('removePeer', handleRemovePeer);
+    signalingSocket.on('gesture-text', (data) => {
+        const receivedText = data.text;
+        console.log('Received gesture text:', receivedText);
+        speakText(receivedText);
+    });
+    
 } // end [initClientPeer]
 
+function speakText(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utterance);
+}
 /**
  * Send async data to signaling server (server.js)
  * @param {string} msg msg to send to signaling server
