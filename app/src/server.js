@@ -532,14 +532,14 @@ app.get('/', OIDCAuth, (req, res) => {
     if (!OIDC.enabled && hostCfg.protected) {
         const ip = getIP(req);
         if (allowedIP(ip)) {
-            htmlInjector.injectHtml(views.landing, res);
+            htmlInjector.injectHtml(views.newCall, res);
             hostCfg.authenticated = true;
         } else {
             hostCfg.authenticated = false;
             res.redirect('/login');
         }
     } else {
-        return htmlInjector.injectHtml(views.landing, res);
+        return htmlInjector.injectHtml(views.newCall, res);
     }
 });
 
