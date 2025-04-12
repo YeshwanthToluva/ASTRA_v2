@@ -1096,6 +1096,9 @@ server.listen(port, null, () => {
  * information. After all of that happens, they'll finally be able to complete
  * the peer connection and will be in streaming audio/video between eachother.
  */
+// inside io.on('connection', (socket) => { ... })
+
+
 io.sockets.on('connect', async (socket) => {
     log.debug('[' + socket.id + '] connection accepted', {
         host: socket.handshake.headers.host.split(':')[0],
@@ -1107,6 +1110,11 @@ io.sockets.on('connect', async (socket) => {
 
     const transport = socket.conn.transport.name; // in most cases, "polling"
     log.debug('[' + socket.id + '] Connection transport', transport);
+
+    socket.on('text-message', (data) => {
+        socket.broadcast.emit('gesture-text', data); // send to all other users
+        console.log('gesture-text', data.text); // log to console
+    });
 
     /**
      * Check upgrade transport

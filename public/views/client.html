@@ -72,6 +72,8 @@
         <!-- JavaScripts -->
 
         <script async src="../js/umami.js"></script>
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
     </head>
 
     <body>
@@ -1136,10 +1138,9 @@ access to use this app.
                 FilesetResolver as shr_FilesetResolver,
                 GestureRecognizer as shr_GestureRecognizer,
             } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
-        
+            
             let shr_gestureRecognizer;
             let shr_videoElement;
-        
             async function shr_createGestureRecognizer() {
                 const shr_vision = await shr_FilesetResolver.forVisionTasks(
                     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
@@ -1173,10 +1174,14 @@ access to use this app.
         
                 if (shr_result.gestures.length > 0) {
                     const shr_topGesture = shr_result.gestures[0][0].categoryName;
+                    let detectedGesture = shr_topGesture;
+                    signalingSocket.emit('text-message',{text:detectedGesture});
                     console.log(`Gesture: ${shr_topGesture}`); // Log the gesture name to the console
                 }
-        
-                requestAnimationFrame(shr_predictLoop);
+                
+                setTimeout(() => {
+                    requestAnimationFrame(shr_predictLoop);
+                }, 1300);
             }
         
             // Initialize the recognizer and start recognition
