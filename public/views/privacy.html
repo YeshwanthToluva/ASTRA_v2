@@ -3,7 +3,7 @@
     <head>
         <!-- Title and Icon -->
 
-        <title id="privacyPolicyTitle">MiroTalk - privacy and policy.</title>
+        <title id="privacyPolicyTitle">ASTRA - privacy and policy.</title>
         <link id="shortcutIcon" rel="shortcut icon" href="../images/logo.svg" />
         <link id="appleTouchIcon" rel="apple-touch-icon" href="../images/logo.svg" />
 
@@ -15,7 +15,7 @@
 
         <meta
             name="description"
-            content="MiroTalk powered by WebRTC, Real-time secure video calls, chat and screen sharing capabilities in the browser, from your mobile or desktop"
+            content="ASTRA powered by WebRTC, Real-time secure video calls, chat and screen sharing capabilities in the browser, from your mobile or desktop"
         />
         <meta
             name="keywords"
@@ -30,6 +30,26 @@
         <!-- JavaScripts -->
 
         <script async src="../js/umami.js"></script>
+        <style>
+
+background-video-wrapper {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                    z-index: -1;
+                  }
+            
+                  .background-video {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                  }
+            
+
+        </style>
     </head>
     <body class="has-animations">
         <div class="body-wrap">
@@ -39,10 +59,10 @@
                         <div class="brand">
                             <div class="m-0">
                                 <a href="/">
-                                    <img src="../images/logo.svg" alt="MiroTalk P2P" width="32" height="32" />
+                                    <img src="../images/logo.svg" alt="ASTRA P2P" width="32" height="32" />
                                     <!-- <img
-                                        src="../images/mirotalk-mc.png"
-                                        alt="MiroTalk P2P"
+                                        src="../images/ASTRA-mc.png"
+                                        alt="ASTRA P2P"
                                         width="96"
                                         height="auto"
                                         style="margin-top: 80px"
@@ -55,6 +75,12 @@
             </header>
             <main class="site-content mt-48">
                 <section class="hero section">
+                    <!-- VIDEO BG -->
+                    <div class="background-video-wrapper">
+                      <video autoplay loop muted playsinline class="background-video">
+                        <source src="../videos/privacy.mp4" type="video/mp4" />
+                      </video>
+                    </div>
                     <div class="container">
                         <div class="hero-inner section-inner">
                             <div class="split-wrap invert-mobile">
@@ -66,7 +92,7 @@
                                         <p class="mt-0 mb-32 reveal-from-bottom" data-reveal-delay="300">
                                             We limit ourselves to collect the smallest amount of user data that we need
                                             in order to create a seamless experience when using
-                                            <strong>MiroTalk</strong>. <br /><br />
+                                            <strong>ASTRA</strong>. <br /><br />
                                             This data includes mainly:
                                             <a
                                                 href="https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate"
@@ -108,11 +134,11 @@
                                                 target="_blank"
                                                 >Blob</a
                                             >, then will be downloaded on Your PC/Mobile Device. <br /><br />
-                                            <strong>MiroTalk</strong> is purely peer-to-peer, which means the user's
+                                            <strong>ASTRA</strong> is purely peer-to-peer, which means the user's
                                             video, audio, chat and file is not sent to our server at all. <br /><br />
                                             We use Umami to track aggregated usage statistics in order to improve our
                                             service. The maker of
-                                            <strong>MiroTalk</strong> has no intention of using personally or selling
+                                            <strong>ASTRA</strong> has no intention of using personally or selling
                                             any of the above-mentioned data.
                                         </p>
                                         <div class="reveal-from-bottom" data-reveal-delay="450">
@@ -162,7 +188,7 @@
                                         </a>
                                     </li>
                                     <li class="footer-social-icon">
-                                        <a target="_blank" href="https://www.facebook.com/mirotalk">
+                                        <a target="_blank" href="https://www.facebook.com/ASTRA">
                                             <svg
                                                 width="16"
                                                 height="16"
@@ -222,11 +248,11 @@
                                     <li>
                                         <a
                                             class="github-button"
-                                            href="https://github.com/miroslavpejic85/mirotalk"
+                                            href="https://github.com/miroslavpejic85/ASTRA"
                                             data-color-scheme="no-preference: light; light: light; dark: dark;"
                                             data-size="large"
                                             data-show-count="true"
-                                            aria-label="Star miroslavpejic85/mirotalk on GitHub"
+                                            aria-label="Star miroslavpejic85/ASTRA on GitHub"
                                             >Star</a
                                         >
                                     </li>
@@ -240,7 +266,7 @@
                                         <a href="/about">About</a>
                                     </li>
                                     <li>
-                                        <a href="https://p2p.mirotalk.com/api/v1/docs/">Rest API</a>
+                                        <a href="https://p2p.ASTRA.com/api/v1/docs/">Rest API</a>
                                     </li>
                                     <li>
                                         <a target="_blank" href="https://www.linkedin.com/in/miroslav-pejic-976a07101/"
@@ -249,7 +275,7 @@
                                     </li>
                                 </ul>
                             </nav>
-                            <div class="footer-copyright">&copy; 2025 MiroTalk, all rights reserved</div>
+                            <div class="footer-copyright">&copy; 2025 ASTRA, all rights reserved</div>
                         </div>
                     </div>
                 </div>

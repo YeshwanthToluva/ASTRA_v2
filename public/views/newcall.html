@@ -104,8 +104,8 @@
                       <a href="#">Dashboard</a>
                       <a href="#features">Features</a> <!-- This links to the Features section -->
                       <a href="#">Resources</a>
-                      <a href="#">Contribute</a>
-                      <a href="#">Contact</a>
+                      <a href="/privacy">Privacy</a>
+                      <a href="/about">About</a>
                     </div>
                   </nav>
                   
@@ -113,8 +113,8 @@
                   <main class="site-content">
                     <!-- VIDEO BG -->
                     <div class="background-video-wrapper">
-                      <video autoplay loop muted playsinline class="background-video">
-                        <source src="../videos/2.mp4" type="video/mp4" />
+                      <video autoplay  muted playsinline class="background-video">
+                        <!-- <source src="../videos/2.mp4" type="video/mp4" /> -->
                       </video>
                     </div>
             
@@ -205,8 +205,8 @@
               <div class="features-icon mb-16" style="color: #fff;">
                 <i class="fas fa-comments fa-2x"></i>
               </div>
-              <h4 class="mt-0 mb-8" style="color: #fff;">Live Chat</h4>
-              <p class="m-0 text-sm" style="color: #ddd;">Send instant messages during your call. Collaborate in real-time while keeping things simple.</p>
+              <h4 class="mt-0 mb-8" style="color: #fff;">Live Gesture To Speech</h4>
+              <p class="m-0 text-sm" style="color: #ddd;">Send instant messages via Gestures. Collaborate in real-time while keeping things simple.</p>
             </div>
           </div>
   
@@ -377,6 +377,32 @@
                 </footer>
             </div>
 
+            <script>
+              const videoWrapper = document.querySelector('.background-video-wrapper');
+              const videoElement = videoWrapper.querySelector('.background-video');
+              const videoSources = ['../videos/1.mp4', '../videos/2.mp4', '../videos/3.mp4'];
+              let currentVideoIndex = 0;
+            
+              function setVideoSource(index) {
+                videoElement.src = videoSources[index];
+                videoElement.load();
+                videoElement.play();
+              }
+            
+              videoElement.addEventListener('ended', () => {
+                currentVideoIndex = (currentVideoIndex + 1) % videoSources.length;
+                setVideoSource(currentVideoIndex);
+              });
+            
+              // Start playing the first video
+              setVideoSource(currentVideoIndex);
+            </script>
+            
+            <div class="background-video-wrapper">
+              <video autoplay muted playsinline class="background-video"></video>
+            </div>
+            
+            
         <script defer src="../js/utils.js"></script>
         <script defer src="../js/brand.js"></script>
         <script defer src="../js/landing.js"></script>
