@@ -196,6 +196,7 @@ const hideMeBtn = getId('hideMeBtn');
 const screenShareBtn = getId('screenShareBtn');
 const myHandBtn = getId('myHandBtn');
 const leaveRoomBtn = getId('leaveRoomBtn');
+const gestureToggleBtn=getId('gestureToggleBtn');
 
 // Room Emoji Picker
 const closeEmojiPickerContainer = getId('closeEmojiPickerContainer');
@@ -834,6 +835,7 @@ function refreshMainButtonsToolTipPlacement() {
     setTippy(chatRoomBtn, 'Open the chat', bottomButtonsPlacement);
     setTippy(mySettingsBtn, 'Open the settings', bottomButtonsPlacement);
     setTippy(leaveRoomBtn, 'Leave this room', bottomButtonsPlacement);
+    setTippy(gestureToggleBtn,'start gesture recognition', bottomButtonsPlacement);
 }
 
 /**
@@ -1500,7 +1502,7 @@ async function whoAreYou() {
         allowOutsideClick: false,
         allowEscapeKey: false,
         background: swBg,
-        title: brand.app?.name || 'MiroTalk P2P',
+        title: brand.app?.name || 'ASTRA P2P',
         position: 'center',
         input: 'text',
         inputPlaceholder: 'Enter your email or name',
@@ -6364,7 +6366,7 @@ function shareRoomByEmail() {
             const selectedDateTime = document.getElementById('datetimePicker').value;
             const roomPassword = isRoomLocked && thisRoomPassword ? 'Password: ' + thisRoomPassword + newLine : '';
             const email = '';
-            const emailSubject = `Please join our MiroTalk P2P Video Chat Meeting`;
+            const emailSubject = `Please join our ASTRA P2P Video Chat Meeting`;
             const emailBody = `The meeting is scheduled at: ${newLine} DateTime: ${selectedDateTime} ${newLine}${roomPassword}Click to join: ${roomURL} ${newLine}`;
             document.location = 'mailto:' + email + '?subject=' + emailSubject + '&body=' + emailBody;
         },
@@ -11075,12 +11077,12 @@ function showAbout() {
                         <a 
                             id="email-button" 
                             data-umami-event="Email button" 
-                            href="mailto:miroslav.pejic.85@gmail.com?subject=MiroTalk P2P info"> 
-                            miroslav.pejic.85@gmail.com
+                            href="mailto:#?subject=MiroTalk P2P info"> 
+                            ASTRA@gmail.com
                         </a>
                         <br /><br />
                         <hr />
-                        <span>&copy; 2025 MiroTalk P2P, all rights reserved</span>
+                        <span>&copy; 2025 ASTRA P2P, all rights reserved</span>
                         <hr />
                         `
                 }
@@ -11114,7 +11116,7 @@ function leaveFeedback() {
         background: swBg,
         imageUrl: images.feedback,
         title: 'Leave a feedback',
-        text: 'Do you want to rate your MiroTalk experience?',
+        text: 'Do you want to rate your ASTRA experience?',
         confirmButtonText: `Yes`,
         denyButtonText: `No`,
         showClass: { popup: 'animate__animated animate__fadeInDown' },

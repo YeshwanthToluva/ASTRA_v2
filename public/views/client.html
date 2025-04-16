@@ -3,7 +3,7 @@
     <head>
         <!-- Title and Icon -->
 
-        <title id="clientTitle">MiroTalk WebRTC Video call, Chat Room & Screen Sharing.</title>
+        <title id="clientTitle">ASTRA WebRTC Video call, Chat Room & Screen Sharing.</title>
         <link id="icon" rel="shortcut icon" href="../images/logo.svg" />
         <link id="appleTouchIcon" rel="apple-touch-icon" href="../images/logo.svg" />
 
@@ -16,7 +16,7 @@
         />
         <meta
             name="description"
-            content="MiroTalk powered by WebRTC, Real-time Simple Secure Fast video calls, chat and screen sharing capabilities in the browser, from your mobile or desktop."
+            content="ASTRA powered by WebRTC, Real-time Simple Secure Fast video calls, chat and screen sharing capabilities in the browser, from your mobile or desktop."
         />
         <meta
             name="keywords"
@@ -156,6 +156,7 @@ access to use this app.
             <button id="chatRoomBtn" class="fas fa-comment"></button>
             <button id="mySettingsBtn" class="fas fa-cogs"></button>
             <button id="leaveRoomBtn" class="fa-solid fa-phone-slash"></button>
+            <button id="gestureToggleBtn" class="fa-solid fa-hand-sparkles"></button>
         </div>
 
         <!-- End bottom buttons -->
@@ -1059,7 +1060,7 @@ access to use this app.
         <!-- Start File Send -->
 
         <div id="sendFileDiv" class="center fadein">
-            <img id="imgShareSend" src="../images/share.png" alt="mirotalk-share-send" class="center-img" /><br />
+            <img id="imgShareSend" src="../images/share.png" alt="ASTRA-share-send" class="center-img" /><br />
             <div id="sendFileInfo"></div>
             <div id="sendFilePercentage"></div>
             <progress id="sendProgress" max="0" value="0"></progress>
@@ -1071,7 +1072,7 @@ access to use this app.
         <!-- Start File Receive -->
 
         <div id="receiveFileDiv" class="center fadein">
-            <img id="imgShareReceive" src="../images/share.png" alt="mirotalk-share-receive" class="center-img" /><br />
+            <img id="imgShareReceive" src="../images/share.png" alt="ASTRA-share-receive" class="center-img" /><br />
             <div id="receiveFileInfo"></div>
             <div id="receiveFilePercentage"></div>
             <progress id="receiveProgress" max="0" value="0"></progress>
@@ -1133,60 +1134,158 @@ access to use this app.
         <!-- End Video container -->
         
 
-        <script type="module">
+        <!-- <script type="module">
             import {
                 FilesetResolver as shr_FilesetResolver,
                 GestureRecognizer as shr_GestureRecognizer,
             } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
             
-            let shr_gestureRecognizer;
-            let shr_videoElement;
-            async function shr_createGestureRecognizer() {
-                const shr_vision = await shr_FilesetResolver.forVisionTasks(
-                    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
-                );
-                console.log("Model loading from:", "gesture_recognizer.task");
-        
-                shr_gestureRecognizer = await shr_GestureRecognizer.createFromOptions(shr_vision, {
-                    baseOptions: {
-                        modelAssetPath: "/views/gesture_recognizer.task", // Replace with your trained model path
-                    },
-                    runningMode: "VIDEO",
-                });
-        
-                console.log("✅ ASTRA's GestureRecognizer loaded");
-            }
-        
-            async function shr_startWebcamAndRecognize() {
-                shr_videoElement = document.createElement("video"); // Create video element to capture input
-                const shr_stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                shr_videoElement.srcObject = shr_stream;
-                shr_videoElement.play();
-        
-                shr_videoElement.addEventListener("loadeddata", shr_predictLoop);
-            }
-        
-            async function shr_predictLoop() {
-                const shr_result = shr_gestureRecognizer.recognizeForVideo(
-                    shr_videoElement,
-                    Date.now()
-                );
-        
-                if (shr_result.gestures.length > 0) {
-                    const shr_topGesture = shr_result.gestures[0][0].categoryName;
-                    let detectedGesture = shr_topGesture;
-                    signalingSocket.emit('text-message',{text:detectedGesture});
-                    console.log(`Gesture: ${shr_topGesture}`); // Log the gesture name to the console
+            function Gesturestart()
+            {
+                let shr_gestureRecognizer;
+                let shr_videoElement;
+                async function shr_createGestureRecognizer() {
+                    const shr_vision = await shr_FilesetResolver.forVisionTasks(
+                        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+                    );
+                    console.log("Model loading from:", "gesture_recognizer.task");
+            
+                    shr_gestureRecognizer = await shr_GestureRecognizer.createFromOptions(shr_vision, {
+                        baseOptions: {
+                            modelAssetPath: "/views/gesture_recognizer.task", // Replace with your trained model path
+                        },
+                        runningMode: "VIDEO",
+                    });
+            
+                    console.log("✅ ASTRA's GestureRecognizer loaded");
                 }
-                
-                setTimeout(() => {
-                    requestAnimationFrame(shr_predictLoop);
-                }, 1300);
+            
+                async function shr_startWebcamAndRecognize() {
+                    shr_videoElement = document.createElement("video"); // Create video element to capture input
+                    const shr_stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    shr_videoElement.srcObject = shr_stream;
+                    shr_videoElement.play();
+            
+                    shr_videoElement.addEventListener("loadeddata", shr_predictLoop);
+                }
+            
+                async function shr_predictLoop() {
+                    const shr_result = shr_gestureRecognizer.recognizeForVideo(
+                        shr_videoElement,
+                        Date.now()
+                    );
+            
+                    if (shr_result.gestures.length > 0) {
+                        const shr_topGesture = shr_result.gestures[0][0].categoryName;
+                        let detectedGesture = shr_topGesture;
+                        signalingSocket.emit('text-message',{text:detectedGesture});
+                        console.log(`Gesture: ${shr_topGesture}`); // Log the gesture name to the console
+                    }
+                    
+                    setTimeout(() => {
+                        requestAnimationFrame(shr_predictLoop);
+                    }, 1300);
+                }
+            
+                // Initialize the recognizer and start recognition
+                shr_createGestureRecognizer().then(shr_startWebcamAndRecognize);
             }
-        
-            // Initialize the recognizer and start recognition
-            shr_createGestureRecognizer().then(shr_startWebcamAndRecognize);
-        </script>
+            window.Gesturestart = Gesturestart;
+        </script> -->
+
+
+
+<script type="module">
+    import {
+        FilesetResolver as shr_FilesetResolver,
+        GestureRecognizer as shr_GestureRecognizer,
+    } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
+
+    let shr_gestureRecognizer;
+    let shr_videoElement;
+    let shr_stream;
+    let shr_running = false;
+    let shr_loopId;
+
+    async function Gesturestart() {
+        const btn = document.getElementById("gestureToggleBtn");
+
+        if (shr_running) {
+            // Stop gesture recognition
+            shr_running = false;
+            clearTimeout(shr_loopId);
+            if (shr_stream) {
+                shr_stream.getTracks().forEach(track => track.stop());
+            }
+            if (shr_videoElement) {
+                shr_videoElement.pause();
+                shr_videoElement.remove();
+                shr_videoElement = null;
+            }
+            //btn.textContent = "Start Gesture";
+            alert("🛑 Gesture recognition stopped.");
+            console.log("🛑 Gesture recognition stopped.");
+        } else {
+            // Start gesture recognition
+            shr_running = true;
+            //btn.textContent = "Stop Gesture";
+            await shr_createGestureRecognizer();
+            await shr_startWebcamAndRecognize();
+        }
+    }
+
+    async function shr_createGestureRecognizer() {
+        const shr_vision = await shr_FilesetResolver.forVisionTasks(
+            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+        );
+        console.log("Model loading from:", "gesture_recognizer.task");
+
+        shr_gestureRecognizer = await shr_GestureRecognizer.createFromOptions(shr_vision, {
+            baseOptions: {
+                modelAssetPath: "/views/gesture_recognizer.task", // Replace with your trained model path
+            },
+            runningMode: "VIDEO",
+        });
+
+        alert("✅ ASTRA's GestureRecognizer loaded");
+        console.log("✅ ASTRA's GestureRecognizer loaded");
+    }
+
+    async function shr_startWebcamAndRecognize() {
+        shr_videoElement = document.createElement("video");
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        shr_stream = stream;
+        shr_videoElement.srcObject = stream;
+        shr_videoElement.play();
+
+        shr_videoElement.addEventListener("loadeddata", shr_predictLoop);
+    }
+
+    async function shr_predictLoop() {
+        if (!shr_running) return;
+
+        const shr_result = await shr_gestureRecognizer.recognizeForVideo(
+            shr_videoElement,
+            Date.now()
+        );
+
+        if (shr_result.gestures.length > 0) {
+            const shr_topGesture = shr_result.gestures[0][0].categoryName;
+            let detectedGesture = shr_topGesture;
+            signalingSocket.emit('text-message', { text: detectedGesture });
+            console.log(`Gesture: ${shr_topGesture}`); // Fixed syntax
+        }
+
+        shr_loopId = setTimeout(() => {
+            requestAnimationFrame(shr_predictLoop);
+        }, 1300);
+    }
+
+    // Attach toggle function
+    document.getElementById("gestureToggleBtn").addEventListener("click", Gesturestart);
+</script>
+
+
         
           
 
