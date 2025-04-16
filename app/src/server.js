@@ -205,12 +205,12 @@ const ngrokAuthToken = process.env.NGROK_AUTH_TOKEN;
 // Stun (https://bloggeek.me/webrtcglossary/stun/)
 // Turn (https://bloggeek.me/webrtcglossary/turn/)
 const iceServers = [];
-const stunServerUrl = process.env.STUN_SERVER_URL;
-const turnServerUrl = process.env.TURN_SERVER_URL;
-const turnServerUsername = process.env.TURN_SERVER_USERNAME;
-const turnServerCredential = process.env.TURN_SERVER_CREDENTIAL;
-const stunServerEnabled = getEnvBoolean(process.env.STUN_SERVER_ENABLED);
-const turnServerEnabled = getEnvBoolean(process.env.TURN_SERVER_ENABLED);
+const stunServerUrl = process.env.STUN_SERVER_URL || 'stun:stun.l.google.com:19302';
+const turnServerUrl = process.env.TURN_SERVER_URL || 'turn:freestun.net:3478';
+const turnServerUsername = process.env.TURN_SERVER_USERNAME || 'free';
+const turnServerCredential = process.env.TURN_SERVER_CREDENTIAL || 'free';
+const stunServerEnabled = getEnvBoolean(process.env.STUN_SERVER_ENABLED) || true; 
+const turnServerEnabled = getEnvBoolean(process.env.TURN_SERVER_ENABLED) || true;
 // Stun is mandatory for not internal network
 if (stunServerEnabled && stunServerUrl) iceServers.push({ urls: stunServerUrl });
 // Turn is recommended if direct peer to peer connection is not possible
