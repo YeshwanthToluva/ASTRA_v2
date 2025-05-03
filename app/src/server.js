@@ -8,7 +8,6 @@ http://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=Server
 ███████ ███████ ██   ██   ████   ███████ ██   ██                                           
 
 dependencies: {
-    @mattermost/client      : https://www.npmjs.com/package/@mattermost/client
     @sentry/node            : https://www.npmjs.com/package/@sentry/node
     axios                   : https://www.npmjs.com/package/axios
     colors                  : https://www.npmjs.com/package/colors
@@ -51,7 +50,6 @@ dependencies: {
 
 require('dotenv').config();
 
-const { auth, requiresAuth } = require('express-openid-connect');
 const { Server } = require('socket.io');
 const http = require('http');
 const https = require('https');
@@ -66,7 +64,6 @@ const app = express();
 const fs = require('fs');
 const checkXSS = require('./xss.js');
 const ServerApi = require('./api');
-const mattermostCli = require('./mattermost');
 const Validate = require('./validate');
 const HtmlInjector = require('./htmlInjector');
 const Host = require('./host');
@@ -165,7 +162,7 @@ const io = new Server({
 // Host protection (disabled by default)
 const hostProtected = getEnvBoolean(process.env.HOST_PROTECTED);
 const userAuth = getEnvBoolean(process.env.HOST_USER_AUTH);
-const hostUsersString = process.env.HOST_USERS || '[{"username": "MiroTalk", "password": "P2P"}]';
+const hostUsersString = process.env.HOST_USERS || '[{"username": "ASTRA", "password": "P2P"}]';
 const hostUsers = JSON.parse(hostUsersString);
 const hostCfg = {
     protected: hostProtected,
@@ -176,12 +173,12 @@ const hostCfg = {
 
 // JWT config
 const jwtCfg = {
-    JWT_KEY: process.env.JWT_KEY || 'mirotalk_jwt_secret',
+    JWT_KEY: process.env.JWT_KEY || 'ASTRA_jwt_secret',
     JWT_EXP: process.env.JWT_EXP || '1h',
 };
 
 // Room presenters
-const roomPresentersString = process.env.PRESENTERS || '["MiroTalk P2P"]';
+const roomPresentersString = process.env.PRESENTERS || '["ASTRA P2P"]';
 const roomPresenters = JSON.parse(roomPresentersString);
 
 // Swagger config
@@ -239,12 +236,8 @@ const sentryEnabled = getEnvBoolean(process.env.SENTRY_ENABLED);
 const sentryDSN = process.env.SENTRY_DSN;
 const sentryTracesSampleRate = process.env.SENTRY_TRACES_SAMPLE_RATE;
 
-// Slack API
-const CryptoJS = require('crypto-js');
-const qS = require('qs');
-const slackEnabled = getEnvBoolean(process.env.SLACK_ENABLED);
-const slackSigningSecret = process.env.SLACK_SIGNING_SECRET;
 
+const CryptoJS = require('crypto-js');
 // Setup sentry client
 if (sentryEnabled) {
     Sentry.init({
@@ -285,85 +278,12 @@ if (configChatGPT.enabled) {
     }
 }
 
-// Mattermost config
-const mattermostCfg = {
-    enabled: getEnvBoolean(process.env.MATTERMOST_ENABLED),
-    server_url: process.env.MATTERMOST_SERVER_URL,
-    username: process.env.MATTERMOST_USERNAME,
-    password: process.env.MATTERMOST_PASSWORD,
-    token: process.env.MATTERMOST_TOKEN,
-    api_disabled: api_disabled,
-};
 
 // IP Whitelist
 const ipWhitelist = {
     enabled: getEnvBoolean(process.env.IP_WHITELIST_ENABLED),
     allowed: process.env.IP_WHITELIST_ALLOWED ? JSON.parse(process.env.IP_WHITELIST_ALLOWED) : [],
 };
-
-// OIDC - Open ID Connect
-const OIDC = {
-    enabled: process.env.OIDC_ENABLED ? getEnvBoolean(process.env.OIDC_ENABLED) : false,
-    baseUrlDynamic: process.env.OIDC_BASE_URL_DYNAMIC ? getEnvBoolean(process.env.OIDC_BASE_URL_DYNAMIC) : false,
-    config: {
-        issuerBaseURL: process.env.OIDC_ISSUER_BASE_URL,
-        clientID: process.env.OIDC_CLIENT_ID,
-        clientSecret: process.env.OIDC_CLIENT_SECRET,
-        baseURL: process.env.OIDC_BASE_URL,
-        secret: process.env.SESSION_SECRET,
-        authorizationParams: {
-            response_type: 'code',
-            scope: 'openid profile email',
-        },
-        authRequired: process.env.OIDC_AUTH_REQUIRED ? getEnvBoolean(process.env.OIDC_AUTH_REQUIRED) : false, // Set to true if authentication is required for all routes
-        auth0Logout: process.env.OIDC_AUTH_LOGOUT ? getEnvBoolean(process.env.OIDC_AUTH_LOGOUT) : true, // Set to true to enable logout with Auth0
-        routes: {
-            callback: '/auth/callback', // Indicating the endpoint where your application will handle the callback from the authentication provider after a user has been authenticated.
-            login: false, // Dedicated route in your application for user login.
-            logout: '/logout', // Indicating the endpoint where your application will handle user logout requests.
-        },
-    },
-};
-
-// Custom middleware function for OIDC authentication
-function OIDCAuth(req, res, next) {
-    if (OIDC.enabled) {
-        function handleHostProtected(req) {
-            if (!hostCfg.protected) return;
-
-            const ip = authHost.getIP(req);
-            hostCfg.authenticated = true;
-            authHost.setAuthorizedIP(ip, true);
-            // Check...
-            log.debug('OIDC ------> Host protected', {
-                authenticated: hostCfg.authenticated,
-                authorizedIPs: authHost.getAuthorizedIPs(),
-            });
-        }
-
-        if (req.oidc.isAuthenticated()) {
-            log.debug('OIDC ------> User already Authenticated');
-            handleHostProtected(req);
-            return next();
-        }
-
-        // Apply requiresAuth() middleware conditionally
-        requiresAuth()(req, res, function () {
-            log.debug('OIDC ------> requiresAuth');
-            // Check if user is authenticated
-            if (req.oidc.isAuthenticated()) {
-                log.debug('[OIDC] ------> User isAuthenticated');
-                handleHostProtected(req);
-                next();
-            } else {
-                // User is not authenticated
-                res.status(401).send('Unauthorized');
-            }
-        });
-    } else {
-        next();
-    }
-}
 
 // stats configuration
 const statsData = {
@@ -431,8 +351,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// Mattermost
-const mattermost = new mattermostCli(app, mattermostCfg);
 
 // POST start from here...
 app.post('*', function (next) {
@@ -462,44 +380,7 @@ app.use((err, req, res, next) => {
     }
 });
 
-// OpenID Connect - Dynamically set baseURL based on incoming host and protocol
-if (OIDC.enabled) {
-    const getDynamicConfig = (host, protocol) => {
-        const baseURL = `${protocol}://${host}`;
 
-        const config = OIDC.baseUrlDynamic
-            ? {
-                  ...OIDC.config,
-                  baseURL,
-              }
-            : OIDC.config;
-
-        log.debug('OIDC baseURL', config.baseURL);
-
-        return config;
-    };
-
-    // Apply the authentication middleware using dynamic baseURL configuration
-    app.use((req, res, next) => {
-        const host = req.headers.host;
-        const protocol = req.protocol === 'https' ? 'https' : 'http';
-        const dynamicOIDCConfig = getDynamicConfig(host, protocol);
-        try {
-            auth(dynamicOIDCConfig)(req, res, next);
-        } catch (err) {
-            log.error('OIDC Auth Middleware Error', err);
-            process.exit(1);
-        }
-    });
-}
-
-// Route to display user information
-app.get('/profile', OIDCAuth, (req, res) => {
-    if (OIDC.enabled) {
-        return res.json(req.oidc.user); // Send user information as JSON
-    }
-    res.sendFile(views.notFound);
-});
 
 // Authentication Callback Route
 app.get('/auth/callback', (req, res, next) => {
@@ -508,55 +389,17 @@ app.get('/auth/callback', (req, res, next) => {
 
 // Logout Route
 app.get('/logout', (req, res) => {
-    if (OIDC.enabled) {
-        //
-        if (hostCfg.protected) {
-            const ip = authHost.getIP(req);
-            if (authHost.isAuthorizedIP(ip)) {
-                authHost.deleteIP(ip);
-            }
-            hostCfg.authenticated = false;
-            //
-            log.debug('[OIDC] ------> Logout', {
-                authenticated: hostCfg.authenticated,
-                authorizedIPs: authHost.getAuthorizedIPs(),
-            });
-        }
-        req.logout(); // Logout user
-    }
     res.redirect('/'); // Redirect to the home page after logout
 });
 
 // main page
-app.get('/', OIDCAuth, (req, res) => {
-    if (!OIDC.enabled && hostCfg.protected) {
-        const ip = getIP(req);
-        if (allowedIP(ip)) {
-            htmlInjector.injectHtml(views.newCall, res);
-            hostCfg.authenticated = true;
-        } else {
-            hostCfg.authenticated = false;
-            res.redirect('/login');
-        }
-    } else {
+app.get('/', (req, res) => {
         return htmlInjector.injectHtml(views.newCall, res);
-    }
 });
 
 // set new room name and join
-app.get('/newcall', OIDCAuth, (req, res) => {
-    if (!OIDC.enabled && hostCfg.protected) {
-        const ip = getIP(req);
-        if (allowedIP(ip)) {
-            res.redirect('/');
-            hostCfg.authenticated = true;
-        } else {
-            hostCfg.authenticated = false;
-            res.redirect('/login');
-        }
-    } else {
-        htmlInjector.injectHtml(views.newCall, res);
-    }
+app.get('/newcall', (req, res) => {
+    htmlInjector.injectHtml(views.newCall, res);
 });
 
 // Get stats endpoint
@@ -565,7 +408,7 @@ app.get('/stats', (req, res) => {
     res.send(statsData);
 });
 
-// mirotalk about
+// astra about
 app.get(['/about'], (req, res) => {
     res.sendFile(views.about);
 });
@@ -643,10 +486,8 @@ app.get('/join/', async (req, res) => {
             }
         }
 
-        const OIDCUserAuthenticated = OIDC.enabled && req.oidc.isAuthenticated();
-
         // Peer valid going to auth as host
-        if ((hostCfg.protected && isPeerValid && isPeerPresenter && !hostCfg.authenticated) || OIDCUserAuthenticated) {
+        if ((hostCfg.protected && isPeerValid && isPeerPresenter && !hostCfg.authenticated)) {
             const ip = getIP(req);
             hostCfg.authenticated = true;
             authHost.setAuthorizedIP(ip, true);
@@ -687,7 +528,7 @@ app.get('/join/:roomId', function (req, res) {
     if (allowRoomAccess) {
         htmlInjector.injectHtml(views.client, res);
     } else {
-        !OIDC.enabled && hostCfg.protected ? res.redirect('/login') : res.redirect('/');
+        hostCfg.protected ? res.redirect('/login') : res.redirect('/');
     }
 });
 
@@ -926,46 +767,6 @@ app.post(`${apiBasePath}/join`, (req, res) => {
     });
 });
 
-/*
-    MiroTalk Slack app v1
-    https://api.slack.com/authentication/verifying-requests-from-slack
-*/
-
-// Slack request meeting room endpoint
-app.post('/slack', (req, res) => {
-    if (!slackEnabled) return res.end('`Under maintenance` - Please check back soon.');
-
-    // Check if endpoint allowed
-    if (api_disabled.includes('slack')) {
-        return res.end('`This endpoint has been disabled`. Please contact the administrator for further information.');
-    }
-
-    log.debug('Slack', req.headers);
-
-    if (!slackSigningSecret) return res.end('`Slack Signing Secret is empty!`');
-
-    const slackSignature = req.headers['x-slack-signature'];
-    const requestBody = qS.stringify(req.body, { format: 'RFC1738' });
-    const timeStamp = req.headers['x-slack-request-timestamp'];
-    const time = Math.floor(new Date().getTime() / 1000);
-
-    // The request timestamp is more than five minutes from local time. It could be a replay attack, so let's ignore it.
-    if (Math.abs(time - timeStamp) > 300) return res.end('`Wrong timestamp` - Ignore this request.');
-
-    // Get Signature to compare it later
-    const sigBaseString = 'v0:' + timeStamp + ':' + requestBody;
-    const mySignature = 'v0=' + CryptoJS.HmacSHA256(sigBaseString, slackSigningSecret);
-
-    // Valid Signature return a meetingURL
-    if (mySignature == slackSignature) {
-        const host = req.headers.host;
-        const meetingURL = getMeetingURL(host);
-        log.debug('Slack', { meeting: meetingURL });
-        return res.end(meetingURL);
-    }
-    // Something wrong
-    return res.end('`Wrong signature` - Verification failed!');
-});
 
 /**
  * Request meeting room endpoint
@@ -1003,7 +804,6 @@ function getServerConfig(tunnel = false) {
         email: nodemailer.emailCfg.alert ? nodemailer.emailCfg : false,
 
         // Security, Authorization, and User Management
-        oidc: OIDC.enabled ? OIDC : false,
         host_protected: hostCfg.protected || hostCfg.user_auth ? hostCfg : false,
         presenters: roomPresenters,
         ip_whitelist: ipWhitelist.enabled ? ipWhitelist : false,
@@ -1016,8 +816,6 @@ function getServerConfig(tunnel = false) {
 
         // Integrations
         chatGPT_enabled: configChatGPT.enabled ? configChatGPT : false,
-        slack_enabled: slackEnabled,
-        mattermost_enabled: mattermostCfg.enabled ? mattermostCfg : false,
 
         // Monitoring and Logging
         sentry_enabled: sentryEnabled,
@@ -1111,9 +909,8 @@ io.sockets.on('connect', async (socket) => {
     const transport = socket.conn.transport.name; // in most cases, "polling"
     log.debug('[' + socket.id + '] Connection transport', transport);
 
-    socket.on('text-message', (data) => {
-        socket.broadcast.emit('gesture-text', data); // send to all other users
-        console.log('gesture-text', data.text); // log to console
+    socket.on('text-message', ({ room, text }) => {
+        socket.to(room).emit('gesture-text', { text }); 
     });
 
     /**
@@ -2062,26 +1859,23 @@ function getActiveRooms() {
  * @returns boolean true/false
  */
 function isAllowedRoomAccess(logMessage, req, hostCfg, peers, roomId) {
-    const OIDCUserAuthenticated = OIDC.enabled && req.oidc.isAuthenticated();
     const hostUserAuthenticated = hostCfg.protected && hostCfg.authenticated;
     const roomExist = roomId in peers;
     const roomCount = Object.keys(peers).length;
 
     const allowRoomAccess =
-        (!hostCfg.protected && !OIDC.enabled) || // No host protection and OIDC mode enabled (default)
-        (OIDCUserAuthenticated && roomExist) || // User authenticated via OIDC and room Exist
+        (!hostCfg.protected) || // No host protection 
+        (roomExist) || // room Exist
         (hostUserAuthenticated && roomExist) || // User authenticated via Login and room Exist
-        ((OIDCUserAuthenticated || hostUserAuthenticated) && roomCount === 0) || // User authenticated joins the first room
+        (hostUserAuthenticated && roomCount === 0) || // User authenticated joins the first room
         roomExist; // User Or Guest join an existing Room
 
     log.debug(logMessage, {
-        OIDCUserAuthenticated: OIDCUserAuthenticated,
         hostUserAuthenticated: hostUserAuthenticated,
         roomExist: roomExist,
         roomCount: roomCount,
         extraInfo: {
             roomId: roomId,
-            OIDCUserEnabled: OIDC.enabled,
             hostProtected: hostCfg.protected,
             hostAuthenticated: hostCfg.authenticated,
         },

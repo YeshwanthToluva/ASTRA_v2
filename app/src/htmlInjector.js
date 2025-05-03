@@ -19,7 +19,7 @@ class HtmlInjector {
     getInjectData() {
         return {
             OG_TYPE: this.config?.og?.type || 'app-webrtc',
-            OG_SITE_NAME: this.config?.og?.siteName || 'MiroTalk',
+            OG_SITE_NAME: this.config?.og?.siteName || 'ASTRA',
             OG_TITLE: this.config?.og?.title || 'Click the link to make a call.',
             OG_DESCRIPTION:
                 this.config?.og?.description ||

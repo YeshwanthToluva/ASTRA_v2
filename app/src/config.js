@@ -3,12 +3,11 @@
 const packageJson = require('../../package.json');
 
 module.exports = {
-    // Branding and customizations require a license: https://codecanyon.net/item/mirotalk-p2p-webrtc-realtime-video-conferences/38376661
     brand: {
         app: {
-            language: 'en', // https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
-            name: 'MiroTalk',
-            title: 'MiroTalk<br />Free browser based Real-time video calls.<br />Simple, Secure, Fast.',
+            language: 'en', 
+            name: 'ASTRA',
+            title: 'ASTRA<br />Free browser based Real-time video calls.<br />Simple, Secure, Fast.',
             description:
                 'Start your next video call with a single click. No download, plug-in, or login is required. Just get straight to talking, messaging, and sharing your screen.',
             joinDescription: 'Pick a room name.<br />How about this one?',
@@ -17,10 +16,10 @@ module.exports = {
         },
         og: {
             type: 'app-webrtc',
-            siteName: 'MiroTalk',
+            siteName: 'ASTRA',
             title: 'Click the link to make a call.',
             description:
-                'MiroTalk calling provides real-time HD quality and latency simply not available with traditional technology.',
+                'ASTRA calling provides real-time HD quality and latency simply not available with traditional technology.',
             image: 'https://p2p.mirotalk.com/images/preview.png',
             url: 'https://p2p.mirotalk.com',
         },
@@ -62,19 +61,19 @@ module.exports = {
                 Author:<a 
                     id="linkedin-button" 
                     data-umami-event="Linkedin button" 
-                    href="https://www.linkedin.com/in/miroslav-pejic-976a07101/" target="_blank"> 
-                    Miroslav Pejic
+                    href="#" target="_blank"> 
+                    A.S.T.R.A
                 </a>
                 <br /><br />
                 Email:<a 
                     id="email-button" 
                     data-umami-event="Email button" 
-                    href="mailto:miroslav.pejic.85@gmail.com?subject=MiroTalk P2P info"> 
-                    miroslav.pejic.85@gmail.com
+                    href="mailto:#?subject=MiroTalk P2P info"> 
+                    demo@gmail.com
                 </a>
                 <br /><br />
                 <hr />
-                <span>&copy; 2025 MiroTalk P2P, all rights reserved</span>
+                <span>&copy; 2025 ASTRAk P2P, all rights reserved</span>
                 <hr />
             `,
         },
@@ -109,7 +108,6 @@ module.exports = {
             showMaxBtn: true,
             showSaveMessageBtn: true,
             showMarkDownBtn: true,
-            showChatGPTBtn: true,
             showFileShareBtn: true,
             showShareVideoAudioBtn: true,
             showParticipantsBtn: true,
