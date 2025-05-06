@@ -1160,10 +1160,9 @@ function initClientPeer() {
     signalingSocket.on('videoPlayer', handleVideoPlayer);
     signalingSocket.on('disconnect', handleDisconnect);
     signalingSocket.on('removePeer', handleRemovePeer);
-    signalingSocket.on('gesture-text', (data) => {
-        const receivedText = data.text;
-        console.log('Received gesture text:', receivedText);
-        speakText(receivedText);
+    signalingSocket.on('gesture-text', (config) => {
+        console.log('Received g-text:', config);
+        speakText(config);
     });
     
 } // end [initClientPeer]

@@ -909,8 +909,9 @@ io.sockets.on('connect', async (socket) => {
     const transport = socket.conn.transport.name; // in most cases, "polling"
     log.debug('[' + socket.id + '] Connection transport', transport);
 
-    socket.on('text-message', ({ room, text }) => {
-        socket.to(room).emit('gesture-text', { text }); 
+    socket.on('text-message', async ({ room, text }) => {
+        console.log(room, text);
+        await sendToRoom(room, socket.id, 'gesture-text', text);
     });
 
     /**
@@ -1150,7 +1151,7 @@ io.sockets.on('connect', async (socket) => {
         };
 
         const activeRooms = getActiveRooms();
-
+        socket.join(activeRooms[0].roomId);
         log.info('[Join] - active rooms and peers count', activeRooms);
 
         log.info('[Join] - connected presenters grp by roomId', presenters);
