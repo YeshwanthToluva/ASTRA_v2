@@ -1174,10 +1174,11 @@ function initClientPeer() {
     signalingSocket.on('removePeer', handleRemovePeer);
     signalingSocket.on('gesture-text', (config) => {
         const receivedText = config.text;
-        console.log('Received g-text:', config);
-        speakText(config);
+        console.log('Received g-text:', config.text, config.name);
+        speakText(config.text);
+
         //******************************************* */
-        paraGestureText1.textContent=`${config}`;
+        paraGestureText1.textContent=`${config.name} : ${config.text}`;
         //******************************************** */
     });
     

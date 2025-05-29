@@ -74,7 +74,6 @@ const log = new Logs('server');
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const bodyParser = require('body-parser');
 
 //****************************************************** */
 
@@ -980,9 +979,9 @@ io.sockets.on('connect', async (socket) => {
     const transport = socket.conn.transport.name; // in most cases, "polling"
     log.debug('[' + socket.id + '] Connection transport', transport);
 
-    socket.on('text-message', async ({ room, text }) => {
-        console.log(room, text);
-        await sendToRoom(room, socket.id, 'gesture-text', text);
+    socket.on('text-message', async ({ room, text, name }) => {
+        console.log(room, text, name);
+        await sendToRoom(room, socket.id, 'gesture-text', {text,name});
     });
 
     /**

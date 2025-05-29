@@ -1290,8 +1290,8 @@ access to use this app.
         if (shr_result.gestures.length > 0) {
             const shr_topGesture = shr_result.gestures[0][0].categoryName;
             let detectedGesture = shr_topGesture;
-            signalingSocket.emit('text-message', { room: getRoomId(),text: detectedGesture });
-            console.log(`Gesture: ${shr_topGesture}`); // Fixed syntax
+            let name =  document.getElementById('myVideoParagraph').innerText;
+            signalingSocket.emit('text-message', { room: getRoomId(),text: detectedGesture, name: name.substring(0,name.length - 5)});            console.log(`Gesture: ${shr_topGesture}`); // Fixed syntax
             //***************************************************************
             paraGestureText.textContent=`${shr_topGesture}`;
             //***************************************************************
