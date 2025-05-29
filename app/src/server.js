@@ -415,7 +415,7 @@ app.get('/login', (req, res) => {
 });
 
 // Register a new user
-mongoose.connect('mongodb://localhost:27017/my-login-db');
+mongoose.connect('mongodb+srv://sharathdasari1719:Sharath1719!@cluster0.eefka.mongodb.net/astra');
 
 const userSchema = new mongoose.Schema({
     name: String,
