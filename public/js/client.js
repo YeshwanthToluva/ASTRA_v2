@@ -197,7 +197,9 @@ const screenShareBtn = getId('screenShareBtn');
 const myHandBtn = getId('myHandBtn');
 const leaveRoomBtn = getId('leaveRoomBtn');
 const gestureToggleBtn=getId('gestureToggleBtn');
-
+//*********************************************** */
+const myGestureText=getId('myGestureText');
+//************************************************** */
 // Room Emoji Picker
 const closeEmojiPickerContainer = getId('closeEmojiPickerContainer');
 const emojiPickerContainer = getId('emojiPickerContainer');
@@ -1137,6 +1139,16 @@ function initClientPeer() {
         });
     };
 
+    //**************************************************** */
+
+    const myGestureText2=document.getElementById('myGestureText');
+    const paraGestureText1=document.createElement('p');
+    paraGestureText1.style.color='white';
+    paraGestureText1.style.fontSize='30px';
+    myGestureText2.appendChild(paraGestureText1);
+
+    //****************************************************** */
+
     // on receiving data from signaling server...
     signalingSocket.on('connect', handleConnect);
     signalingSocket.on('unauthorized', handleUnauthorized);
@@ -1161,8 +1173,12 @@ function initClientPeer() {
     signalingSocket.on('disconnect', handleDisconnect);
     signalingSocket.on('removePeer', handleRemovePeer);
     signalingSocket.on('gesture-text', (config) => {
+        const receivedText = config.text;
         console.log('Received g-text:', config);
         speakText(config);
+        //******************************************* */
+        paraGestureText1.textContent=`${config}`;
+        //******************************************** */
     });
     
 } // end [initClientPeer]
@@ -3015,6 +3031,7 @@ async function loadLocalMedia(stream, kind) {
             // local video elements
             const myVideoWrap = document.createElement('div');
             const myLocalMedia = document.createElement('video');
+            
 
             // html elements
             const myVideoNavBar = document.createElement('div');
@@ -3166,6 +3183,7 @@ async function loadLocalMedia(stream, kind) {
             myVideoWrap.appendChild(myLocalMedia);
             myVideoWrap.appendChild(myPitchMeter);
             myVideoWrap.appendChild(myPeerName);
+            
 
             videoMediaContainer.appendChild(myVideoWrap);
             elemDisplay(myVideoWrap, false);
@@ -6219,6 +6237,9 @@ function showButtonsBarAndMenu() {
     toggleExtraBtn.className = className.down;
     elemDisplay(bottomButtons, true, 'flex');
     isButtonsVisible = true;
+    //************************************* */
+    elemDisplay(myGestureText,true,'flex')
+    //************************************* */
 }
 
 /**
@@ -10229,6 +10250,7 @@ function handleWhiteboardAction(config, logMe = true) {
                 elemDisplay(whiteboardTitle, true, 'flex');
                 elemDisplay(whiteboardOptions, true, 'inline');
                 elemDisplay(whiteboardBtn, true);
+                
                 wbDrawing(true);
                 wbIsLock = false;
             }

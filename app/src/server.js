@@ -70,6 +70,14 @@ const Host = require('./host');
 const Logs = require('./logs');
 const log = new Logs('server');
 
+//**************************************************** */
+
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+
+//****************************************************** */
+
 // Custom Brand and buttons
 const config = safeRequire('./config');
 
@@ -392,8 +400,71 @@ app.get('/logout', (req, res) => {
     res.redirect('/'); // Redirect to the home page after logout
 });
 
-// main page
+
+// *************************************************************************************
+
+
+// Serve the login page on server start
 app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
+// Serve login page
+app.get('/login', (req, res) => {
+    htmlInjector.injectHtml(views.login, res);
+});
+
+// Register a new user
+mongoose.connect('mongodb://localhost:27017/my-login-db');
+
+const userSchema = new mongoose.Schema({
+    name: String,
+    email: { type: String, unique: true },
+    password: String
+});
+
+const User = mongoose.model('User', userSchema);
+
+app.post('/register', async (req, res) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const user = new User({
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword
+        });
+        await user.save();
+        res.status(201).json('User registered');
+    } catch (error) {
+        res.status(400).send('Error registering user');
+    }
+});
+
+app.post('/ulogin', async (req, res) => {
+    console.log('Login endpoint hit');  // Log to verify endpoint is hit
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        console.log('User found:', user);  // Log the user details
+        if (user && await bcrypt.compare(req.body.password, user.password)) {
+            const token = jwt.sign({userId:user._id},process.env.JWT_KEY || 'my-jwt-secret-key');
+            const responseMessage = { message: 'User logged in', redirectUrl: '/landing',user:user,token:token };
+            console.log('Response message:', responseMessage);  // Log the response message
+            res.status(200).json(responseMessage);
+        } else {
+            console.log('Invalid credentials');  // Log invalid credentials
+            res.status(400).json({ error: 'Invalid credentials' });
+        }
+    } catch (error) {
+        console.error('Error logging in user', error);  // Log any errors
+        res.status(400).json({ error: 'Error logging in user' });
+    }
+});
+
+// *************************************************************************************
+
+
+// main page
+app.get('/landing', (req, res) => {
         return htmlInjector.injectHtml(views.newCall, res);
 });
 

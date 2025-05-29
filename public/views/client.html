@@ -145,6 +145,12 @@ access to use this app.
         </div>
         <!-- End left buttons -->
 
+        <!--********************************************************-->
+         <div id="myGestureText">
+            
+         </div>
+         <!--********************************************************-->
+
         <!-- Start bottom buttons -->
         <div id="bottomButtons" class="fadein">
             <button id="toggleExtraBtn" class="fas fa-chevron-down"></button>
@@ -1203,6 +1209,16 @@ access to use this app.
         GestureRecognizer as shr_GestureRecognizer,
     } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
 
+    //***************************************************************
+    const myGestureText1=document.getElementById('myGestureText');
+    const paraGestureText=document.createElement('p');
+    paraGestureText.style.color='white';
+    paraGestureText.style.fontSize='30px';
+    // paraGestureText.style.zIndex=1;
+    myGestureText1.appendChild(paraGestureText);
+    
+    //****************************************************************
+
     let shr_gestureRecognizer;
     let shr_videoElement;
     let shr_stream;
@@ -1276,6 +1292,9 @@ access to use this app.
             let detectedGesture = shr_topGesture;
             signalingSocket.emit('text-message', { room: getRoomId(),text: detectedGesture });
             console.log(`Gesture: ${shr_topGesture}`); // Fixed syntax
+            //***************************************************************
+            paraGestureText.textContent=`${shr_topGesture}`;
+            //***************************************************************
         }
 
         shr_loopId = setTimeout(() => {

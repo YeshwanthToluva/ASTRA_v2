@@ -311,6 +311,28 @@ body {
     box-shadow: var(--box-shadow);
 }
 
+/* ******************************************* */
+ #myGestureText{
+    z-index: 10;
+    display: flex;
+    position: fixed;
+    top: 69%;
+    left:30%;
+    right: 30%;
+    /* left: var(--bottom-btns-left); */
+    /* bottom: var(--bottom-btns-bottom); */
+    /* transform: translate(var(--bottom-btns-translate-X), var(--bottom-btns-translate-Y)); */
+    /* flex-direction: var(--bottom-btns-flex-direction); */
+    align-items: center;
+    justify-content:space-between;
+    gap: 0.5rem;
+    /* margin-bottom: var(--bottom-btns-margin-bottom); */
+    border: none !important;
+    /* box-shadow: var(--box-shadow); */
+} 
+
+/* ******************************************** */
+
 #bottomButtons button {
     width: 50px;
     padding: 10px;
