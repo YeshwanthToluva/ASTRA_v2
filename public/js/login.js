@@ -1,81 +1,98 @@
-'use strict';
+const container = document.getElementById('container');
+const registerBtn = document.getElementById('register');
+const loginBtn = document.getElementById('login');
 
-console.log(window.location);
+// Toggle between sign-in and sign-up
+registerBtn.addEventListener('click', () => {
+    container.classList.add("active");
+});
 
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
-const loginBtn = document.getElementById('loginButton');
+loginBtn.addEventListener('click', () => {
+    container.classList.remove("active");
+});
 
-usernameInput.onkeyup = (e) => {
-    if (e.keyCode === 13) {
-        e.preventDefault();
-        login();
+// Handle Registration
+document.querySelector('.signUpForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = e.target.querySelector('input[placeholder="Name"]').value;
+    const email = e.target.querySelector('input[placeholder="Email"]').value;
+    const password = e.target.querySelector('input[placeholder="Password"]').value;
+    const confirmPassword = e.target.querySelector('input[placeholder="Confirm-Password"]').value;
+    console.log(name,password,email,confirmPassword);
+    if (password !== confirmPassword) {
+        alert("Passwords do not match");
+        return;
     }
-};
-passwordInput.onkeyup = (e) => {
-    if (e.keyCode === 13) {
-        e.preventDefault();
-        login();
+
+    try {
+        const res = await fetch('http://localhost:3000/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await res.json();
+        if (res.status == 201) {
+            alert('User registered successfully, Please Login');
+            container.classList.remove("active");
+        } else {
+            alert(data.message || 'Error registering user');
+        }
+    } catch (error) {
+        console.error('Error registering user:', error);
+        alert('Error registering user');
     }
-};
+});
 
-loginBtn.onclick = (e) => {
-    login();
-};
+// Handle Login
+document.querySelector('.signInForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = e.target.querySelector('input[placeholder="Email"]').value;
+    const password = e.target.querySelector('input[placeholder="Password"]').value;
 
-function login() {
-    const username = filterXSS(document.getElementById('username').value);
-    const password = filterXSS(document.getElementById('password').value);
+    try {
+        const res = await fetch('http://localhost:3000/ulogin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
 
-    // http://localhost:3000/join/?room=test
-    // http://localhost:3000/join/?room=test&name=mirotalk&audio=0&video=0&screen=0&notify=0
-    const qs = new URLSearchParams(window.location.search);
-    const room = filterXSS(qs.get('room'));
+        const data = await res.json();
+        if (res.status === 200) {
+            alert('Login successful!');
+            window.location.href = data.redirectUrl || '/landing';
+        } else {
+            alert(data.error || 'Invalid credentials');
+        }
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        alert('Invalid credentials');
+    }
 
-    // http://localhost:3000/join/test
-    const pathParts = window.location.pathname.split('/');
-    const roomPath = pathParts[pathParts.length - 1];
+    //********************************************************************** */
 
-    if (username && password) {
-        axios
-            .post('/login', {
-                username: username,
-                password: password,
-            })
-            .then(function (response) {
-                console.log(response);
-
-                // Store in session
-                const token = response.data.message;
-                window.sessionStorage.peer_token = token;
-
-                if (room) {
-                    return (window.location.href = '/join/' + window.location.search);
-                    // return (window.location.href = '/join/?room=' + room + '&token=' + token);
-                }
-                if (roomPath && roomPath !== 'login') {
-                    return (window.location.href = '/join/' + roomPath);
-                    // return (window.location.href = '/join/?room=' + roomPath + '&token=' + token);
-                }
-
-                return (window.location.href = '/logged');
-            })
-            .catch(function (error) {
-                console.error(error);
-                popup('warning', 'Invalid credentials. Please try again.');
+        // After successful login, store the token
+        const loginUser = async (data) => {
+            const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
             });
-        return;
-    }
-    if (!username && !password) {
-        popup('warning', 'Username and Password required');
-        return;
-    }
-    if (!username) {
-        popup('warning', 'Username required');
-        return;
-    }
-    if (!password) {
-        popup('warning', 'Password required');
-        return;
-    }
-}
+        
+            const resData = await response.json();
+            console.log(resData);
+            if (response.ok) {
+            // Save token to localStorage
+            localStorage.setItem('token', resData.token);
+        
+            // Redirect to landing page or protected route
+            window.location.href = resData.redirectUrl || '/landing';
+            } else {
+            alert(resData.message);
+            }
+        };
+  
+
+    //********************************************************************** */
+
+});
